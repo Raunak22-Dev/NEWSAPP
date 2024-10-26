@@ -1,162 +1,115 @@
-import React, { Component } from 'react';
+import React, { useEffect, useState, useCallback } from 'react';
 import NewItem from './NewItem';
 import Spinner from './Spinner';
 import PropTypes from 'prop-types';
 import InfiniteScroll from "react-infinite-scroll-component";
 import './News.css';
 
-export default class News extends Component {
-  static defaultProps = {
-    country: 'us',
-    pageSize: 9,
-    category: 'general',
-  };
+const News = ({ country = 'in', pageSize = 9, category = 'general', apiKey, setProgress }) => {
+  const [articles, setArticles] = useState([]); 
+  const [loading, setLoading] = useState(false); 
+  const [page, setPage] = useState(1); 
+  const [totalResults, setTotalResults] = useState(0); 
+  const [stopFetching, setStopFetching] = useState(false); 
+  const [error, setError] = useState(null); // State for handling errors
 
-  static propTypes = {
-    country: PropTypes.string,
-    pageSize: PropTypes.number,
-    category: PropTypes.string,
-  };
-
-  capitalizeFirstLetter = (string) => {
+  const capitalizeFirstLetter = (string) => {
     return string.charAt(0).toUpperCase() + string.slice(1);
   };
 
-  constructor(props) {
-    super(props);
-    this.state = {
-      articles: [],
-      loading: false,
-      page: 1,
-      totalResults: 0,
-      stopFetching: false,
-    };
-    document.title = `${this.capitalizeFirstLetter(this.props.category)} - QuickNews`;
-  }
+  const updateNews = useCallback(async () => {
+    setProgress?.(10);
+    let url = `https://newsapi.org/v2/top-headlines?country=${country}&category=${category}&apiKey=${apiKey}&page=${page}&pageSize=${pageSize * 2}`;
 
-  async updateNews() {
-    this.props.setProgress?.(10); // Optional chaining to avoid error if setProgress is not passed as a prop
-    let url = `https://newsapi.org/v2/top-headlines?country=${this.props.country}&category=${this.props.category}&apiKey=${this.props.apiKey}&page=${this.state.page}&pageSize=${this.props.pageSize * 2}`;
-    this.setState({ loading: true });
-
+    setLoading(true);
+    setError(null); // Reset error state
     try {
       let data = await fetch(url);
-      this.props.setProgress?.(50);
+      setProgress?.(50);
 
       let parsedData = await data.json();
-      this.props.setProgress?.(70);
+      setProgress?.(70);
       
       if (parsedData.status !== 'ok') {
-        console.error("Error fetching news:", parsedData.message);
-        this.setState({ loading: false });
+        setError(parsedData.message); // Set error message
         return;
       }
-      this.props.setProgress?.(100);
-      
-      const validArticles = parsedData.articles?.filter((article) => article.description) || [];
-      
-      this.setState({
-        articles: validArticles.slice(0, this.props.pageSize),
-        totalResults: parsedData.totalResults,
-        loading: false,
-      });
-    } catch (error) {
-      console.error("Fetch failed:", error);
-      this.setState({ loading: false });
-    }
-  }
-
-
-  async componentDidMount() {
-    this.updateNews();
-  }
-
-  fetchMoreData = async () => {
-    if (this.state.stopFetching) return; // Stop fetching if already stopped
-
-    this.setState({ page: this.state.page + 1, loading: true });
-
-    let url = `https://newsapi.org/v2/top-headlines?country=${this.props.country}&category=${this.props.category}&apiKey=${this.props.apiKey}&page=${this.state.page}&pageSize=${this.props.pageSize * 2}`;
-
-    try {
-      let data = await fetch(url);
-      let parsedData = await data.json();
-
-      if (parsedData.status !== 'ok') {
-        console.error("Error fetching news:", parsedData.message);
-        this.setState({ loading: false });
-        return;
-      }
+      setProgress?.(100);
 
       const validArticles = parsedData.articles?.filter((article) => article.description) || [];
-
-      if (validArticles.length === 0) {
-        this.setState({
-          stopFetching: true,
-          loading: false,
-        });
-        return;
+      setArticles((prevArticles) => [...prevArticles, ...validArticles]);
+      setTotalResults(parsedData.totalResults);
+      
+      if (validArticles.length < pageSize) {
+        setStopFetching(true);
       }
-
-      this.setState({
-        articles: [...this.state.articles, ...validArticles.slice(0, this.props.pageSize)],
-        totalResults: parsedData.totalResults,
-        loading: false,
-      });
     } catch (error) {
+      setError("Fetch failed. Please try again."); // Set error message
       console.error("Fetch failed:", error);
-      this.setState({ loading: false });
+    } finally {
+      setLoading(false);
     }
+  }, [country, category, apiKey, pageSize, page, setProgress]);
+
+  useEffect(() => {
+    updateNews();
+  }, [updateNews]);
+
+  const fetchMoreData = () => {
+    if (stopFetching) return;
+    setPage((prevPage) => prevPage + 1);
   };
 
-  render() {
-    const { articles, totalResults, loading, stopFetching } = this.state;
-  
-    // Check if there are more articles to load
-    const hasMoreArticles = articles.length < totalResults && !stopFetching;
-  
-    // Filter unique articles based on URL
-    const uniqueArticles = articles.filter((article, index, self) =>
-      index === self.findIndex((t) => t.url === article.url)
-    );
-  
-    return (
-      <div className="container my-3">
-        <h2>Top Headlines - {this.capitalizeFirstLetter(this.props.category)}</h2>
-  
-        <InfiniteScroll
-          dataLength={this.state.articles.length}
-          next={this.fetchMoreData}
-          hasMore={hasMoreArticles}
-          loader={loading && <Spinner />}
-        >
-          <div className="container">
-            <div className="row">
-              {uniqueArticles.map((element, index) => (
-                <div className="col-md-4" key={`${element.url}-${index}`}>
-                  <NewItem
-                    title={element.title ? element.title.slice(0, 39) : ''}
-                    description={element.description ? element.description.slice(0, 88) : ''}
-                    imageUrl={element.urlToImage}
-                    newsUrl={element.url}
-                    author={element.author}
-                    date={element.publishedAt}
-                    source={element.source.name}
-                  />
-                </div>
-              ))}
-            </div>
+  const uniqueArticles = articles.filter((article, index, self) =>
+    index === self.findIndex((t) => t.url === article.url)
+  );
+  const hasMoreArticles = uniqueArticles.length < totalResults && !stopFetching;
+  return (
+    <div className="container my-3">
+      <h2 style={{ marginTop: '60px' }}>Top Headlines - {capitalizeFirstLetter(category)}</h2>
+
+      {error && <div className="alert alert-danger">{error}</div>} {/* Display error message */}
+
+      <InfiniteScroll
+        dataLength={uniqueArticles.length}
+        next={fetchMoreData}
+        hasMore={uniqueArticles.length < totalResults && !stopFetching}
+        loader={loading && <Spinner />}
+      >
+        <div className="container">
+          <div className="row">
+            {uniqueArticles.map((element) => (
+              <div className="col-md-4" key={element.url}>
+                <NewItem
+                  title={element.title ? element.title.slice(0, 39) : ''}
+                  description={element.description ? element.description.slice(0, 88) : ''}
+                  imageUrl={element.urlToImage}
+                  newsUrl={element.url}
+                  author={element.author}
+                  date={element.publishedAt}
+                  source={element.source.name}
+                />
+              </div>
+            ))}
           </div>
-        </InfiniteScroll>
-  
-        {/* Display "That's all for today!" only when no more articles to load and some articles have been fetched */}
-        {!hasMoreArticles && articles.length > 0 && (
-          <div className="text-center mt-4">
-            <h4>That's all for today!</h4>
-          </div>
-        )}
-      </div>
-    );
-  }
-  
-}
+        </div>
+      </InfiniteScroll>
+
+      {!hasMoreArticles && uniqueArticles.length > 0 && (
+        <div className="text-center mt-4">
+          <h4>That's all for today!</h4>
+        </div>
+      )}
+    </div>
+  );
+};
+
+News.propTypes = {
+  country: PropTypes.string,
+  pageSize: PropTypes.number,
+  category: PropTypes.string,
+  apiKey: PropTypes.string.isRequired,
+  setProgress: PropTypes.func,
+};
+
+export default News;
