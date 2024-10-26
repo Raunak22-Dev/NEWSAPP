@@ -28,6 +28,7 @@
   color: rgba(255, 255, 255, 0.8); /* Light color for links */
   font-size: 1.1rem; /* Increase font size for readability */
   transition: color 0.3s ease, transform 0.3s ease; /* Smooth color and hover transition */
+  text-decoration: none; /* Ensure no underline by default */
 }
 
 /* Hover effect on links */
@@ -39,8 +40,8 @@
 
 /* Active link state */
 .nav-link.active {
-  color: #f8f9fa; /* Light color for active link */
-  border-bottom: 2px solid #f8f9fa; /* Underline active link */
+  color: darkgrey; /* Change color to dark grey for active link */
+  border-bottom: none; /* Remove underline for active link */
 }
 
 /* Navbar toggler button */
@@ -61,7 +62,7 @@
 
 /* Hover effect for the toggler button */
 .navbar-toggler:hover {
-  background-color: rgba(255, 255, 255, 0.2); /* Add slight hover background */
+  background-color: darkgrey; /* Add slight hover background */
 }
 
 /* Responsive design for smaller screens */
