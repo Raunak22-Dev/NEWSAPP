@@ -1,14 +1,14 @@
 # Newapp
 
-**Newapp** is a dynamic web application built using React class-based components, designed to provide users with an intuitive and engaging experience. The app showcases how to effectively leverage React's class components to manage state, handle lifecycle methods, and create reusable UI components.
+**Newapp** is a dynamic web application built using React function-based components, designed to provide users with an intuitive and engaging experience. The app showcases how to effectively leverage React's function components to manage state, handle lifecycle methods, and create reusable UI components.
 
 ## Features
 
-- **Class-Based Components**: Utilizes React's class components for state management and lifecycle methods.
-- **User-Friendly Interface**: A clean and responsive design that enhances user interaction.
-- **State Management**: Implements local state management within components to maintain data flow.
-- **Event Handling**: Demonstrates effective event handling using class methods.
-- **Reusable Components**: Modular architecture allows for easy reusability of components throughout the app.
+- **Function-Based Components: Utilizes React's function components with useState and useEffect hooks for efficient state management and lifecycle behaviors.
+- **User-Friendly Interface: A clean and responsive design that enhances user interaction.
+- **State Management: Implements local state management using hooks to maintain data flow within components.
+- **Event Handling: Demonstrates effective event handling through inline functions and custom hook functions.
+- **Reusable Components: Modular architecture that allows for easy reusability of components throughout the app.
 
 ## ScreenShort
    ![HOME Page](<images/Screenshot 2024-10-26 162446.png>)
@@ -44,7 +44,7 @@ To get started with Newapp, follow these steps:
 Once the application is running, you can interact with various features, including:
 
 - **User authentication and profile management.
-- **Data display with class-based components.
+- **Data display with function-based components.
 - **Responsive navigation and layout.
 
 ## Contributing
