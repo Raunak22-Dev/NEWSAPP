@@ -1,0 +1,81 @@
+/* General navbar styling */
+.navbar {
+  background-color: #343a40; /* Dark background */
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* Subtle shadow */
+  transition: background-color 0.3s ease; /* Smooth background color transition */
+  padding: 0.75rem 1.5rem; /* Padding for a sleek look */
+}
+
+/* Brand styling */
+.navbar-brand {
+  font-size: 1.6rem; /* Slightly larger font size for emphasis */
+  font-weight: bold; /* Bold text */
+  color: #f8f9fa; /* Light text color */
+  letter-spacing: 0.05rem; /* Slight letter spacing for readability */
+  transition: color 0.3s ease; /* Smooth color transition */
+}
+
+/* Brand hover effect */
+.navbar-brand:hover {
+  color: #e9ecef; /* Slightly lighter color on hover */
+  text-decoration: none; /* Remove underline */
+  opacity: 0.9; /* Add slight transparency on hover */
+}
+
+/* Navbar links */
+.nav-link {
+  margin: 0 15px; /* More space between links */
+  color: rgba(255, 255, 255, 0.8); /* Light color for links */
+  font-size: 1.1rem; /* Increase font size for readability */
+  transition: color 0.3s ease, transform 0.3s ease; /* Smooth color and hover transition */
+}
+
+/* Hover effect on links */
+.nav-link:hover {
+  color: #f8f9fa; /* Lighter color on hover */
+  transform: scale(1.05); /* Slight zoom effect */
+  opacity: 0.85; /* Add transparency */
+}
+
+/* Active link state */
+.nav-link.active {
+  color: #f8f9fa; /* Light color for active link */
+  border-bottom: 2px solid #f8f9fa; /* Underline active link */
+}
+
+/* Navbar toggler button */
+.navbar-toggler {
+  border: none; /* Remove default border */
+  outline: none; /* Remove default outline */
+  padding: 0.5rem 0.75rem; /* Add padding for better touch interaction */
+  transition: background-color 0.3s ease; /* Smooth background change */
+}
+
+/* Toggler icon styling */
+.navbar-toggler-icon {
+  background-color: rgba(255, 255, 255, 0.8); /* Light icon color */
+  border-radius: 0.25rem; /* Slightly rounded corners for the icon */
+  width: 24px;
+  height: 24px;
+}
+
+/* Hover effect for the toggler button */
+.navbar-toggler:hover {
+  background-color: rgba(255, 255, 255, 0.2); /* Add slight hover background */
+}
+
+/* Responsive design for smaller screens */
+@media (max-width: 768px) {
+  .navbar-nav {
+    text-align: center; /* Center align the links on small screens */
+  }
+
+  .nav-link {
+    margin: 0.5rem 0; /* Add vertical spacing between links on mobile */
+    font-size: 1.2rem; /* Larger font size for readability on small screens */
+  }
+
+  .navbar-brand {
+    font-size: 1.4rem; /* Slightly smaller brand text on mobile */
+  }
+}

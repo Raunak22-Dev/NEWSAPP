@@ -1,0 +1,44 @@
+/* Spinner.css */
+
+/* Basic styles for the loading text */
+.loading-text {
+  font-size: 20px;
+  font-weight: bold;
+  display: inline-block;
+  color: #333; /* Set a default color */
+}
+
+/* Centering the spinner in its container */
+.loading-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 10px; /* Add some padding around the spinner */
+  width: 100%;
+}
+
+/* Dot animation */
+@keyframes dot-blink {
+  0% { opacity: 0; }
+  33% { opacity: 1; }
+  66% { opacity: 0; }
+  100% { opacity: 0; }
+}
+
+/* Styling for each dot */
+.dot1 {
+  animation: dot-blink 1.5s infinite 0s;
+}
+
+.dot2 {
+  animation: dot-blink 1.5s infinite 0.3s; /* Delay second dot */
+}
+
+.dot3 {
+  animation: dot-blink 1.5s infinite 0.6s; /* Delay third dot */
+}
+
+/* Default color mode */
+.loading-text {
+  color: #333; /* Adjust the color for readability */
+}
